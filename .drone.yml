@@ -1,0 +1,43 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  event:
+    exclude:
+      - tag
+      - promote
+
+steps:
+  - name: install
+    pull: if-not-exists
+    image: node:14
+    commands:
+      - yarn install --frozen-lockfile
+    environment:
+      NPM_AUTH:
+        from_secret: npm_auth
+
+  - name: build
+    pull: if-not-exists
+    image: node:14
+    commands:
+      - yarn build
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - install
+
+  - name: test_end_to_end
+    pull: if-not-exists
+    image: cypress/included:7.5.0
+    commands:
+      - yarn test:e2e
+    depends_on:
+      - build
+
