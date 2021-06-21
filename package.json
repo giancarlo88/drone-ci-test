@@ -10,6 +10,7 @@
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint": "yarn lint:js",
     "cy:run": "cypress run --headless --browser electron",
+    "cy:dev": "cypress open",
     "test:e2e": "start-server-and-test start :3000 cy:run"
   },
   "lint-staged": {
